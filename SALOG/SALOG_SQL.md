@@ -1,0 +1,22 @@
+# SALOG SQL :
+
+## Random SQL Scripts:
+```SQL
+elect * from BOOKING where TRACKING_NUMBER='1029883151';
+select * from CLIENT_ASSIGNMENT where BOOKING_ID='270719219146' and (ROLE='SH' or ROLE='CN');
+select * from CLIENT where CODE='TRANDEKLE002';
+select * from CUSTOMER_CHARACTERISTICS where CC_CUSTOMER_ID='100230542';
+select * from CIP_CUSTOMER where CUST_PROFILE_ID = '100230592';
+
+select * from BOOKING where ID='567576087';
+select * from CLIENT_ASSIGNMENT where BOOKING_ID='567576087';
+
+select count(*) AS NumberOfOrders from CLIENT_ASSIGNMENT where ROLE in('SH','CN') and NumberOfOrders<2 GROUP BY BOOKING_ID;
+
+select * from CLIENT where ID='1000018270';
+
+SELECT BOOKING_ID,COUNT(*) AS NumberOfOrders FROM CLIENT_ASSIGNMENT where ROLE in('SH','CN') GROUP BY BOOKING_ID HAVING COUNT(*)<2 ;
+
+select TRACKING_NUMBER from BOOKING where IS_IMPORT_PREPARED = 1 and MODE_OF_TRANSPORT='AIR';
+
+```
