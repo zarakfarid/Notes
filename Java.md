@@ -45,3 +45,9 @@ For JAVA Cache Clearing : sync && echo 3 | sudo tee /proc/sys/vm/drop_caches
 
 chown -R ana:tomcat /home/ana/aves_migration
 ```
+
+
+## Test case: 
+```
+mvn -Dtest=UsersServiceImpl#testCreateUser test
+```
