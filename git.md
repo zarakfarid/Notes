@@ -21,3 +21,7 @@ git push --set-upstream origin newBranch
 git log --all -- path
 git log --follow -- filename
 ```
+## Check out a remote Git branch: 
+```Shell
+git checkout -b test origin/test
+```
