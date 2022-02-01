@@ -149,7 +149,7 @@ SELECT file_name FROM dba_data_files WHERE tablespace_name = 'UNDOTBS1';
 drop tablespace UNDOTBS1;
 ```
 
-## CUSRSUR:
+## Cursor:
 ```SQL
 
 -- Create TEMP Table
