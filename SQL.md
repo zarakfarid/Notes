@@ -149,4 +149,54 @@ SELECT file_name FROM dba_data_files WHERE tablespace_name = 'UNDOTBS1';
 drop tablespace UNDOTBS1;
 ```
 
+## CUSRSUR:
+```SQL
+
+-- Create TEMP Table
+CREATE TABLE temp_bookingstatus (
+    id             NUMBER(28) NOT NULL,
+    status         VARCHAR2(15 CHAR),
+    is_processed   NUMBER(1)
+);
+
+CREATE UNIQUE INDEX temp_bookingstatus_i ON
+    temp_bookingstatus (
+        id ASC,
+        status ASC,
+        is_processed ASC );
+
+-- Insert data into TEMP Table
+MERGE INTO temp_bookingstatus temp USING ( 
+	SELECT bs.id, b.operational_status
+	FROM booking b
+    JOIN booking_summary bs ON b.id = bs.booking_id
+    WHERE b.operational_status IN ('CLO', 'CAN')
+    AND   b.operational_status <> bs.operational_status)
+source ON ( temp.id = source.id )
+WHEN NOT MATCHED THEN INSERT (id, status, is_processed) VALUES (source.id, source.operational_status, 0);
+
+-- Bulk Update TEMP Table and Table to be Updated
+DECLARE
+  cursor_limit PLS_INTEGER := 1000;
+  cursor data_cursor is select ID,STATUS,IS_PROCESSED from temp_bookingstatus where IS_PROCESSED=0;
+  type t_data_batch is table of temp_bookingstatus%ROWTYPE;
+  bulk_rows t_data_batch;
+BEGIN
+   open data_cursor;
+
+   loop   
+      fetch data_cursor
+        bulk collect into bulk_rows
+        limit cursor_limit;
+      exit when bulk_rows.count = 0;
+
+      forall idx IN 1..bulk_rows.count
+       update Booking_summary set Operational_status=bulk_rows(idx).status where id = bulk_rows(idx).ID;
+      forall idx IN 1..bulk_rows.count
+       update temp_bookingstatus set IS_PROCESSED = 1 where id = bulk_rows(idx).ID;
+      commit;
+   end loop;
+   close data_cursor;
+END;
+```
 
